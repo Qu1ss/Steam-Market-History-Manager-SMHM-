@@ -3,9 +3,9 @@ import pandas as pd
 import streamlit as st
 
 # Настраиваем страницу (делаем её широкой)
-st.set_page_config(page_title="Steam History Helper", layout="wide")
+st.set_page_config(page_title="Steam Market History Manager", layout="wide")
 
-st.title("🎮 Steam History Helper & Analytics")
+st.title("Steam Market History Manager")
 
 
 # Кэшируем загрузку данных для каждого отдельного файла
