@@ -1,47 +1,6 @@
 # 🎮 Steam Market History Manager (SMHM)
 
-[English](#english) | [Русский](#русский)
-
----
-
-## English
-
-A convenient local manager for visualizing, filtering, and deeply analyzing your Steam Community Market transaction history. 
-
-> **Note:** The automatic launch script is tailored for Windows 10/11 users.
-
-### 🚀 Features
-
-* **Full History Access:** View and manage all your market operations within a clean, interactive user interface.
-* **Smart Search Filters:**
-  * Quick keyword search (either across the entire table or restricted to a specific column).
-  * Filter transactions by operation type (`sale` or `purchase`).
-* **Flexible Date Management:**
-  * Automatic "newest transactions on top" sorting with no localized date encoding bugs.
-  * Date range selection via an intuitive built-in calendar ("From" and "To").
-  * Toggleable filter logic: filter either by the listing date (`Listed on`) or the transaction completion date (`Acted on`).
-* **Instant Analytics:** Automatically calculates the total number of items in your current selection and their average price (perfect for finding out exactly how much you spent or earned on specific cases/skins over a given month).
-
-### 🛠️ Tech Stack
-
-* **Python 3.8+**
-* **Streamlit** (for a modern, lightweight, and fast Web-UI)
-* **Pandas** (for efficient data processing and filtering of large datasets)
-
-### 📦 Getting Started
-
-1. **Install Python:** Download and install the latest version of Python 3 from the [official website](https://www.python.org/) (make sure to check the **"Add Python to PATH"** box during installation).
-2. **Install Libraries:** Open your terminal (Command Prompt) and run the following command:
-```bash
-   pip install streamlit pandas
-   ```
-3. **Export Your Steam Data:** Install the **Steam Market History Cataloger** browser extension (version 1.3.0 or higher). Download your market history as a CSV file, making sure to enable the `Exclude non-transaction` option in the extension settings.
-4. **Prepare the File:** Move the downloaded CSV file into the *Steam Market History Manager* project folder and rename it exactly to `data.csv`.
-5. **Launch the App:** Double-click your `.bat` startup file. A new tab will automatically open in your browser displaying your analytics dashboard!
-
-### 📄 License
-
-This project is licensed under the **MIT License**. You are completely free to use, modify, copy, and distribute this code for both personal and commercial purposes.
+[Русский](#русский) | [English](#english)
 
 ---
 
@@ -83,3 +42,44 @@ This project is licensed under the **MIT License**. You are completely free to u
 ### 📄 Лицензия
 
 Этот проект распространяется под **лицензией MIT**. Вы можете свободно использовать, модифицировать, копировать и распространять данный код как в личных, так и в коммерческих целях.
+
+---
+
+## English
+
+A convenient local manager for visualizing, filtering, and deeply analyzing your Steam Community Market transaction history. 
+
+> **Note:** The automatic launch script is tailored for Windows 10/11 users.
+
+### 🚀 Features
+
+* **Full History Access:** View and manage all your market operations within a clean, interactive user interface.
+* **Smart Search Filters:**
+  * Quick keyword search (either across the entire table or restricted to a specific column).
+  * Filter transactions by operation type (`sale` or `purchase`).
+* **Flexible Date Management:**
+  * Automatic "newest transactions on top" sorting with no localized date encoding bugs.
+  * Date range selection via an intuitive built-in calendar ("From" and "To").
+  * Toggleable filter logic: filter either by the listing date (`Listed on`) or the transaction completion date (`Acted on`).
+* **Instant Analytics:** Automatically calculates the total number of items in your current selection and their average price (perfect for finding out exactly how much you spent or earned on specific cases/skins over a given month).
+
+### 🛠️ Tech Stack
+
+* **Python 3.8+**
+* **Streamlit** (for a modern, lightweight, and fast Web-UI)
+* **Pandas** (for efficient data processing and filtering of large datasets)
+
+### 📦 Getting Started
+
+1. **Install Python:** Download and install the latest version of Python 3 from the [official website](https://www.python.org/) (make sure to check the **"Add Python to PATH"** box during installation).
+2. **Install Libraries:** Open your terminal (Command Prompt) and run the following command:
+```bash
+   pip install streamlit pandas
+   ```
+3. **Export Your Steam Data:** Install the **Steam Market History Cataloger** browser extension (version 1.3.0 or higher). Download your market history as a CSV file, making sure to enable the `Exclude non-transaction` option in the extension settings.
+4. **Prepare the File:** Move the downloaded CSV file into the *Steam Market History Manager* project folder and rename it exactly to `data.csv`.
+5. **Launch the App:** Double-click your `.bat` startup file. A new tab will automatically open in your browser displaying your analytics dashboard!
+
+### 📄 License
+
+This project is licensed under the **MIT License**. You are completely free to use, modify, copy, and distribute this code for both personal and commercial purposes.
