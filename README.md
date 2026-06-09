@@ -36,7 +36,7 @@
    pip install streamlit pandas
    ```
 3. **Выгрузите данные из Steam:** Установите в браузере расширение **Steam Inventory Helper**. Скачайте историю ваших сделок в формате CSV, обязательно выбрав в настройках параметр `Exclude non-transaction`.
-4. **Подготовьте файл:** Перенесите скачанный CSV-файл в папку с проектом *Steam Market History Manager* и переименуйте его строго в `data.csv`.
+4. **Подготовьте файл:** Перенесите скачанный CSV-файл в папку data в папке с проектом *Steam Market History Manager* и переименуйте его в `*название*.csv`.
 5. **Запустите приложение:** Кликните дважды по файлу `Запуск.bat`. В браузере автоматически откроется вкладка с вашей аналитикой!
 
 ### 📄 Лицензия
@@ -77,7 +77,7 @@ A convenient local manager for visualizing, filtering, and deeply analyzing your
    pip install streamlit pandas
    ```
 3. **Export Your Steam Data:** Install the **Steam Inventory helper** browser extension. Download your market history as a CSV file, making sure to enable the `Exclude non-transaction` option in the extension settings.
-4. **Prepare the File:** Move the downloaded CSV file into the *Steam Market History Manager* project folder and rename it exactly to `data.csv`.
+4. **Prepare the File:** Move the downloaded CSV file into the data folder in *Steam Market History Manager* project folder and rename it to `*name*.csv`.
 5. **Launch the App:** Double-click your `.bat` startup file. A new tab will automatically open in your browser displaying your analytics dashboard!
 
 ### 📄 License
