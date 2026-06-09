@@ -3,9 +3,9 @@ import pandas as pd
 import streamlit as st
 
 # Настраиваем страницу (делаем её широкой)
-st.set_page_config(page_title="SSteam Market History Manager", layout="wide")
+st.set_page_config(page_title="Steam History Helper", layout="wide")
 
-st.title("Steam Market History Manager")
+st.title("🎮 Steam History Helper & Analytics")
 
 
 # Кэшируем загрузку данных для каждого отдельного файла
@@ -40,7 +40,7 @@ def load_data(file_path):
             s = s.str.replace(" в ", " ", regex=False)
             s = s.str.replace(" at ", " ", regex=False)
 
-            # 2. Переводим русские месяцы in английские (если они есть)
+            # 2. Переводим русские месяцы в английские (если они есть)
             for ru, en in months_ru_to_en.items():
                 s = s.str.replace(ru, en, regex=False)
 
@@ -55,14 +55,22 @@ def load_data(file_path):
     return df
 
 
-# 1. Автоматически находим все файлы .csv в папке проекта
-csv_files = [f for f in os.listdir(".") if f.endswith(".csv")]
+# --- ИЗМЕНЕНО: ЛОГИКА ПАПКИ ДАННЫХ ---
+DATA_FOLDER = "data"
+
+# Если папки 'data' почему-то нет, скрипт сам её создаст, а не упадёт с ошибкой
+if not os.path.exists(DATA_FOLDER):
+    os.makedirs(DATA_FOLDER)
+
+# Ищем файлы .csv конкретно внутри папки 'data'
+csv_files = [f for f in os.listdir(DATA_FOLDER) if f.endswith(".csv")]
+# -------------------------------------
 
 # Проверяем наличие файлов
 if not csv_files:
     st.error(
-        "📥 В папке проекта не найдено ни одного CSV-файла! "
-        'Пожалуйста, закиньте туда файлы выгрузки истории Steam (например, "main_acc.csv", "bot_trade.csv").'
+        f"📥 В папке '{DATA_FOLDER}' не найдено ни одного CSV-файла! "
+        'Пожалуйста, закиньте туда файлы выгрузки истории Steam (например, "main_acc.csv").'
     )
 else:
     # 2. Создаем названия для вкладок (отрезаем расширение ".csv")
@@ -73,13 +81,13 @@ else:
     for tab, file_name in zip(tabs, csv_files):
         with tab:
             try:
-                # Загружаем данные конкретно для этого файла/аккаунта
-                df = load_data(file_name)
+                # ИЗМЕНЕНО: собираем правильный путь к файлу (например, "data/main_acc.csv")
+                full_file_path = os.path.join(DATA_FOLDER, file_name)
+                df = load_data(full_file_path)
 
                 st.subheader(f"📊 Фильтры и аналитика для аккаунта: {file_name[:-4]}")
 
                 # --- БЛОК ФИЛЬТРОВ ---
-                # Первая строка фильтров (Текст, Колонка поиска, Тип операции)
                 row1_col1, row1_col2, row1_col3 = st.columns([2, 1, 1])
 
                 with row1_col1:
@@ -136,7 +144,6 @@ else:
                         )
 
                     with row2_col2:
-                        # Берём только заполненные даты, чтобы календарь инициализировался корректно
                         valid_dates = df[selected_date_col].dropna()
 
                         if not valid_dates.empty:
@@ -160,7 +167,6 @@ else:
                 # --- ЛОГИКА ФИЛЬТРАЦИИ ПРИ ПОМОЩИ PANDAS ---
                 filtered_df = df.copy()
 
-                # 1. Фильтр по датам (календарный диапазон)
                 if (
                     selected_date_col
                     and selected_dates
@@ -168,7 +174,6 @@ else:
                 ):
                     start_date, end_date = selected_dates
                     start_ts = pd.Timestamp(start_date)
-                    # Добавляем конец дня, чтобы захватывать даты включительно
                     end_ts = (
                         pd.Timestamp(end_date)
                         + pd.Timedelta(days=1)
@@ -180,13 +185,11 @@ else:
                         & (filtered_df[selected_date_col] <= end_ts)
                     ]
 
-                # 2. Фильтр по типу операции (Type: sale / purchase)
                 if type_col and selected_type != "Все операции":
                     filtered_df = filtered_df[
                         filtered_df[type_col] == selected_type
                     ]
 
-                # 3. Фильтр по текстовому поиску
                 if search_query:
                     if filter_col == "Все колонки":
                         mask = (
@@ -256,7 +259,6 @@ else:
                     f"Отображено строк: **{filtered_df.shape[0]}** из {df.shape[0]}"
                 )
 
-                # Настройки отображения колонок с датами (чистый формат YYYY-MM-DD без лишнего времени)
                 column_configuration = {}
                 if "Listed On" in filtered_df.columns:
                     column_configuration["Listed On"] = (
