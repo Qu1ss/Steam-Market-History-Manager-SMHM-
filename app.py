@@ -3,7 +3,7 @@ import pandas as pd
 import streamlit as st
 
 # Настраиваем страницу (делаем её широкой)
-st.set_page_config(page_title="Steam Market History Manager", layout="wide")
+st.set_page_config(page_title="SSteam Market History Manager", layout="wide")
 
 st.title("Steam Market History Manager")
 
@@ -55,16 +55,14 @@ def load_data(file_path):
     return df
 
 
-# --- ИЗМЕНЕНО: ЛОГИКА ПАПКИ ДАННЫХ ---
 DATA_FOLDER = "data"
 
-# Если папки 'data' почему-то нет, скрипт сам её создаст, а не упадёт с ошибкой
+# Если папки 'data' почему-то нет, скрипт сам её создаст
 if not os.path.exists(DATA_FOLDER):
     os.makedirs(DATA_FOLDER)
 
 # Ищем файлы .csv конкретно внутри папки 'data'
 csv_files = [f for f in os.listdir(DATA_FOLDER) if f.endswith(".csv")]
-# -------------------------------------
 
 # Проверяем наличие файлов
 if not csv_files:
@@ -81,7 +79,6 @@ else:
     for tab, file_name in zip(tabs, csv_files):
         with tab:
             try:
-                # ИЗМЕНЕНО: собираем правильный путь к файлу (например, "data/main_acc.csv")
                 full_file_path = os.path.join(DATA_FOLDER, file_name)
                 df = load_data(full_file_path)
 
@@ -95,6 +92,12 @@ else:
                         "🔍 Быстрый поиск (по тексту):",
                         "",
                         key=f"search_{file_name}",
+                    )
+                    # ДОБАВЛЕНО: Чекбокс для переключения логики точного/неточно поиска
+                    exact_match = st.checkbox(
+                        "🎯 Только точное совпадение",
+                        value=False,
+                        key=f"exact_{file_name}",
                     )
 
                 with row1_col2:
@@ -167,6 +170,7 @@ else:
                 # --- ЛОГИКА ФИЛЬТРАЦИИ ПРИ ПОМОЩИ PANDAS ---
                 filtered_df = df.copy()
 
+                # 1. Фильтр по датам
                 if (
                     selected_date_col
                     and selected_dates
@@ -185,29 +189,54 @@ else:
                         & (filtered_df[selected_date_col] <= end_ts)
                     ]
 
+                # 2. Фильтр по типу операции
                 if type_col and selected_type != "Все операции":
                     filtered_df = filtered_df[
                         filtered_df[type_col] == selected_type
                     ]
 
+                # 3. ИЗМЕНЕНО: Фильтр по текстовому поиску (с учетом точной/неточной логики)
                 if search_query:
-                    if filter_col == "Все колонки":
-                        mask = (
-                            filtered_df.astype(str)
-                            .apply(
-                                lambda x: x.str.contains(
-                                    search_query, case=False, na=False
+                    if exact_match:
+                        # ТИП ПОИСКА: ТОЧНОЕ СОВПАДЕНИЕ (приводим к нижнему регистру и убираем пробелы по краям)
+                        query_clean = search_query.strip().lower()
+                        if filter_col == "Все колонки":
+                            mask = (
+                                filtered_df.astype(str)
+                                .apply(
+                                    lambda x: x.str.strip().str.lower()
+                                    == query_clean
                                 )
+                                .any(axis=1)
                             )
-                            .any(axis=1)
-                        )
-                        filtered_df = filtered_df[mask]
+                            filtered_df = filtered_df[mask]
+                        else:
+                            filtered_df = filtered_df[
+                                filtered_df[filter_col]
+                                .astype(str)
+                                .str.strip()
+                                .str.lower()
+                                == query_clean
+                            ]
                     else:
-                        filtered_df = filtered_df[
-                            filtered_df[filter_col]
-                            .astype(str)
-                            .str.contains(search_query, case=False, na=False)
-                        ]
+                        # ТИП ПОИСКА: ЧАСТИЧНОЕ СОВПАДЕНИЕ (как было раньше через .contains)
+                        if filter_col == "Все колонки":
+                            mask = (
+                                filtered_df.astype(str)
+                                .apply(
+                                    lambda x: x.str.contains(
+                                        search_query, case=False, na=False
+                                    )
+                                )
+                                .any(axis=1)
+                            )
+                            filtered_df = filtered_df[mask]
+                        else:
+                            filtered_df = filtered_df[
+                                filtered_df[filter_col]
+                                .astype(str)
+                                .str.contains(search_query, case=False, na=False)
+                            ]
 
                 # --- АВТОМАТИЧЕСКАЯ СОРТИРОВКА (Новые сверху) ---
                 sort_col = (
